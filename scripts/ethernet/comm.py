@@ -4,6 +4,9 @@ import threading
 import time
 
 
+datatypes_enum = [int, float, complex, list, tuple, range, str, dict,
+                    bool, bytes, bytearray, memoryview, set, frozenset]
+
 
 
 class EthernetComm():
@@ -34,7 +37,25 @@ class EthernetComm():
     def sendData(self, content, type):
         if self.socket is not None and self.socketOpen:
             if isinstance(content, type):
+                content = '{' + str(datatypes_enum.index(type)) + ';' + content + '}'
                 self.socket.sendto(bytes(content, 'utf-8'), (self.ip, self.port))
 
             else:
                 return False
+
+    def ErrorHandle(self, error):
+
+
+
+        return (err, errorID)
+
+
+    def receiveData(self):
+
+        return True
+
+
+    def getMachineInfo(self):
+
+
+        return info
