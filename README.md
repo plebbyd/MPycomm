@@ -28,7 +28,10 @@ gen.writeFile('basicexample')
 ```
 
 This will create the G-Code file necesarry for a polygon of N=15 sides of length 100. The polygon will be drawn twice:
+
 (1) - counter-clockwise 
+
 (2) - clockwise
+
 The reverseQueue method is used to take the pre-existing line segments and run them in reverse.
 
