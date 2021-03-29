@@ -285,6 +285,18 @@ class ArcGen():
 
         return True
 
+    def createPolygon(self, N, length):
+        interior_angle = (N - 2) * 180 / N
+        current_angle = 0 #Start at 0 degrees on the unit circle. (East is 0)
+        diviser = (N - 2)/2
+        for i in range(N):
+            x_end = self.x + length * math.cos((interior_angle - current_angle) * math.pi / 180)
+            y_end = self.y + length * math.sin((interior_angle - current_angle) * math.pi / 180)
+            current_angle = current_angle - (1/diviser) * interior_angle
+            self.segmentQueue.append(self.createLineSegment(x_end, y_end, 0))
+
+
+
 '''
 if __name__ == '__main__':
 
@@ -296,4 +308,48 @@ if __name__ == '__main__':
     a.addToQueue(a.createArc(a.x, a.y, a.z, 400, -800, 0, 300, False))
     a.addToQueue(a.createArc(a.x, a.y, a.z, 100, 300, 0, 270))
     a.writeFile('bigArc')
+'''
+
+
+'''
+if __name__ == '__main__':
+
+    a = ArcGen()
+    a.segmentQueue.append('G0 X0 Y0')
+    a.coordinateQueue.append([0, 0, 0])
+    a.createPolygon(15, 100)
+    a.createPolygon(15, 50)
+    a.createPolygon(15, 20)
+    a.createPolygon(15, 10)
+    a.createPolygon(15, 5)
+    a.createPolygon(15, 1)
+    a.segmentQueue.append(a.createLineSegment(350, 0, 0))
+    a.createPolygon(8, 100)
+    a.createPolygon(8, 50)
+    a.createPolygon(8, 20)
+    a.createPolygon(8, 10)
+    a.createPolygon(8, 5)
+    a.createPolygon(8, 1)
+    a.segmentQueue.append(a.createLineSegment(550, 0, 0))
+    a.createPolygon(5, 100)
+    a.createPolygon(5, 50)
+    a.createPolygon(5, 20)
+    a.createPolygon(5, 10)
+    a.createPolygon(5, 5)
+    a.createPolygon(5, 1)
+    a.segmentQueue.append(a.createLineSegment(700, 0, 0))
+    a.createPolygon(4, 100)
+    a.createPolygon(4, 50)
+    a.createPolygon(4, 20)
+    a.createPolygon(4, 10)
+    a.createPolygon(4, 5)
+    a.createPolygon(4, 1)
+    a.segmentQueue.append(a.createLineSegment(800, 0, 0))
+    a.createPolygon(3, 100)
+    a.createPolygon(3, 50)
+    a.createPolygon(3, 20)
+    a.createPolygon(3, 10)
+    a.createPolygon(3, 5)
+    a.createPolygon(3, 1)
+    a.writeFile('polycreate')
 '''

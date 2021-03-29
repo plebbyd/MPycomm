@@ -54,8 +54,19 @@ class EthernetComm():
 
         return True
 
+    def wait(self):
+        if self.socket is not None and self.socketOpen:
+            while True:
+                data, addr = self.socket.recvfrom(4096)
+                decoded_data = data.decode('utf-8')
+
+                return decoded_data
 
     def getMachineInfo(self):
+        self.sendData('MachineInfoRequest', str)
+
+
+
 
 
         return info
