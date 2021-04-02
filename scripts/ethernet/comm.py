@@ -70,3 +70,11 @@ class EthernetComm():
 
 
         return info
+
+    def sendBoundingBox(Self, box, confidence, label):
+        #Bounding box in standard fractional format: [xmin, ymin, xmax, ymax] where values are a ratio of image width/height
+        #We will be rounding the confidence to 4 decimal points
+        #Label in as enumerated int values only (e.g. 0, 1, 2 where 0=dog, 1=cat, 3=person)
+        if isinstance(label, int):
+            outGoingData = '[{.4f},{.4f},{.4f},{.4f},{:.4f},{}]'.format(box[0], box[1], box[2], box[3], confidence, label)
+            self.sendData(content, list)
