@@ -1,5 +1,7 @@
 import cv2
 from threading import Thread
+import time
+import random
 
 
 
@@ -12,6 +14,7 @@ class Processor():
         self.imageStream = None
         self.show_frames = False
         self.grabber = None
+        self.inference_results = []
 
     def openStream(self, device_id=0):
         #Device id is an integer value designating which capture device to go through
@@ -44,15 +47,29 @@ class Processor():
     def frameGrabber(self):
         while self.imageStream is not None:
             ret, self.frame = self.imageStream.read()
+            #cv2.resize(self.frame, (self.width, self.height), cv2.INTER_AREA)
 
             if self.show_frames:
                 cv2.imshow('Processor Frame', self.frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
+        self.grabber = None
         cv2.destroyAllWindows()
         return False
 
     def startGrabber(self):
-        self.grabber = Thread(target=self.frameGrabber()).start()
+        if self.grabber is None:
+            self.grabber = Thread(target=self.frameGrabber())
+            self.grabber.start()
 
-    
+        return True
+
+    def loadTensorflowData(self):
+        Thread(target=self.loadTrainingStreamData).start()
+
+        return True
+
+    def loadTrainingStreamData(self):
+        while True:
+            self.inference_results = [[random.random(), random.random(), random.random(), random.random()], random.random(), int(random.random() * 9)]
+            time.sleep(5)

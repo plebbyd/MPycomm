@@ -1,6 +1,5 @@
-import os
 import socket
-import threading
+from threading import Thread, Lock
 import time
 
 
@@ -18,6 +17,8 @@ class EthernetComm():
         self.deviceName = ''
         self.socket = None
         self.socketOpen = False
+        self.output_array = []
+        self.commStream = None
 
     def open(self):
         if self.socket is None:
@@ -35,6 +36,10 @@ class EthernetComm():
             return False
 
     def sendData(self, content, type):
+        #Sends 'encoded' data to connected controller in the form:
+        #{datatype;transmitted_data} where datatype is an enumerated value. Data sent as a string
+        #to controller. BYTE_TO_datatype should be used in MWiec working file to properly store
+        #transmitted data
         if self.socket is not None and self.socketOpen:
             if isinstance(content, type):
                 content = '{' + str(datatypes_enum.index(type)) + ';' + content + '}'
@@ -55,6 +60,7 @@ class EthernetComm():
         return True
 
     def wait(self):
+        #Not sure how well this works yet. Needs testing
         if self.socket is not None and self.socketOpen:
             while True:
                 data, addr = self.socket.recvfrom(4096)
@@ -78,3 +84,21 @@ class EthernetComm():
         if isinstance(label, int):
             outGoingData = '[{:.4f},{:.4f},{:.4f},{:.4f},{:.4f},{}]'.format(box[0], box[1], box[2], box[3], confidence, label)
             self.sendData(outGoingData, str)
+
+    def openCommStream(self):
+        #Opens comm streaming thread for continous transmission
+        #Currently only supports single-box detector transmission
+        if self.commStream is None:
+            self.commStream = Thread(target=self.comm)
+            self.commStream.start()
+        return False
+
+
+    def comm(self):
+        while self.socket is not None and self.socketOpen:
+            if self.output_array:
+                with Lock():
+                    self.sendBoundingBox(self.output_array[0], self.output_array[1], self.output_array[2])
+                    self.output_array.clear()
+        self.commStream = None
+        return False
