@@ -1,10 +1,40 @@
 import socket
+import serial
 from threading import Thread, Lock
 import time
 
 
 datatypes_enum = [int, float, complex, list, tuple, range, str, dict,
                     bool, bytes, bytearray, memoryview, set, frozenset]
+
+class SerialComm():
+
+    def __init__(self, baud, port):
+        self.port = port
+        self.baud = baud
+        self.serial = None
+
+    def open(self):
+        if not self.serial.is_open:
+            self.serial = serial.Serial(self.port, self.baud, timeout=1)
+        else:
+            return False
+
+    def close(self):
+        if self.serial.is_open:
+            self.serial.close()
+        else:
+            return False
+            
+
+    def sendData(self, content, type):
+
+        if self.serial is not None and self.serial.is_open:
+            if isinstance(content, type):
+                content = '{' + str(datatypes_enum.index(type)) + ';' + content + '}'
+                self.serial.write(bytes(content, 'utf-8'))
+            else:
+                return False
 
 
 
